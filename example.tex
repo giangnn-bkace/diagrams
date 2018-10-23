@@ -1,0 +1,65 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, shadows}
+\usepackage{amsmath, bm, times}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{sensor}=[draw, fill=blue!20, text width=5em, text centered, minimum height=2.5em, drop shadow]
+\tikzstyle{ann} = [above, text width=5em, text centered]
+\tikzstyle{wa} = [sensor, text width=10em, fill=red!20, minimum height=6em, rounded corners, drop shadow]
+\tikzstyle{sc} = [sensor, text width=13em, fill=red!20, minimum height=10em, rounded corners, drop shadow]
+
+
+% define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+    \node (wa) [wa]  {System Combination};
+    \path (wa.west)+(-3.2,1.5) node (asr1) [sensor] {$ASR_1$};
+    \path (wa.west)+(-3.2,0.5) node (asr2)[sensor] {$ASR_2$};
+    \path (wa.west)+(-3.2,-1.0) node (dots)[ann] {$\vdots$}; 
+    \path (wa.west)+(-3.2,-2.0) node (asr3)[sensor] {$ASR_N$};    
+   
+    \path (wa.east)+(\blockdist,0) node (vote) [sensor] {$\theta_0,\theta_1,...,\theta_M$\\Estimated Parameters};
+
+    \path [draw, ->] (asr1.east) -- node [above] {} 
+        (wa.160) ;
+    \path [draw, ->] (asr2.east) -- node [above] {} 
+        (wa.180);
+    \path [draw, ->] (asr3.east) -- node [above] {} 
+        (wa.200);
+    \path [draw, ->] (wa.east) -- node [above] {} 
+        (vote.west);
+
+               
+    \path (wa.south) +(0,-\blockdist) node (asrs) {System Combination - Training};
+  
+    \begin{pgfonlayer}{background}
+        \path (asr1.west |- asr1.north)+(-0.5,0.3) node (a) {};
+        \path (wa.south -| wa.east)+(+0.5,-0.3) node (b) {};
+        \path (vote.east |- asrs.east)+(+0.5,-0.5) node (c) {};
+          
+        \path[rounded corners, draw=black!50, dashed]
+            (a) rectangle (c);           
+        \path (asr1.north west)+(-0.2,0.2) node (a) {};
+            
+    \end{pgfonlayer}
+    
+    
+
+\end{tikzpicture}
+
+
+\end{document}

@@ -1,0 +1,60 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
+\usepackage{amsmath, bm, times}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{layer} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
+\tikzstyle{concat} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
+\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
+\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
+\tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, text width=3cm, fill=red!30]
+\tikzstyle{pool} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, text width=3cm, fill=red!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+% define distances for bordering
+\def\blockdist{2.3}
+\def\edgedist{2.5}
+
+\begin{tikzpicture}
+
+
+    \node (prev_layer) [layer] {Previous Layer};
+
+    \node (conv1_1) [conv, below of=prev_layer, xshift=-2cm, yshift=-2cm] {\textbf{1x1x1} conv, \textit{16} };
+    \node (conv2_1) [conv, right of=conv1_1, xshift=3cm] {\textbf{1x1x1} conv, \textit{16}};
+    \node (pool3_1) [pool, right of=conv2_1, xshift=3cm] {\textbf{3x3x3} max-pool stride \textit{1,1,1}};
+
+    \node (conv1_2) [conv, below of=conv1_1, yshift=-2cm] {\textbf{3x3x3} conv, \textit{16}};
+    \node (conv2_2) [conv, below of=conv2_1, yshift=-2cm] {\textbf{3x3x3} conv, \textit{16}};
+    \node (conv3_2) [conv, below of=pool3_1, yshift=-2cm] {\textbf{1x1x1} conv, \textit{16}};
+    \node (conv0_1) [conv, left of=conv1_2, xshift=-3cm] {\textbf{1x1x1} conv, \textit{16}};
+    
+               
+    %\path (wa.south) +(0,-\blockdist) node (asrs) {Inflated Inception Module};
+  
+    %\begin{pgfonlayer}{background}
+    %    \path (asr1.west |- asr1.north)+(-0.5,0.3) node (a) {};
+        %\path (wa.south -| wa.east)+(+0.5,-0.3) node (b) {};
+    %    \path (vote.east |- asrs.east)+(+0.5,-0.5) node (c) {};
+          
+    %    \path[rounded corners, draw=black!50, line width=1pt]
+    %        (a) rectangle (c);           
+    %    \path (asr1.north west)+(-0.2,0.2) node (a) {};
+    %\end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}
