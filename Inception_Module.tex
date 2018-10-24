@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[]{article}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes, arrows}
@@ -15,45 +15,83 @@
 \pgfsetlayers{background,main,foreground}
 
 % define block styles used later
-\tikzstyle{layer} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
-\tikzstyle{concat} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
-\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
-\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width=3cm, fill=red!30]
-\tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, text width=3cm, fill=red!30]
-\tikzstyle{pool} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, text width=3cm, fill=red!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]
+\tikzstyle{layer} = [rectangle, minimum width=4cm, minimum height=0.5cm, text centered, text width=4cm, fill=red!50]
+\tikzstyle{concat} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!40]
+\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!55, yshift=0.35cm, text=white!255]
+\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!30, yshift=0.35cm]
+\tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,align=center, text width=3cm, fill=red!40]
+\tikzstyle{pool} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,text centered, text width=3cm, fill=red!30]
+\tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
+\tikzstyle{every node}=[font=\scriptsize]
 
+\begin{tikzpicture}[line width=0.5mm]
+    \pagenumbering{gobble}
+    \node (prev_layer) [layer, xshift=-5cm] {\small Previous Layer};
 
-% define distances for bordering
-\def\blockdist{2.3}
-\def\edgedist{2.5}
+    \node (conv1_1) [conv, below of=prev_layer, xshift=-1.8cm, yshift=-1.5cm] {\textbf{1x1x1} conv, \textit{96}, stride \textit{1,1,1}};
+    \node (batchnorm1_1) [batchnorm, below of= conv1_1] {\small batch normalization};
+    \node (relu1_1) [relu, below of=batchnorm1_1] {\small ReLU};
+    \node (conv1_2) [conv, below of=relu1_1, yshift=0.1cm] {\textbf{3x3x3} conv, \textit{208}, stride \textit{1,1,1}};
+    \node (batchnorm1_2) [batchnorm, below of= conv1_2] {\small batch normalization};
+    \node (relu1_2) [relu, below of=batchnorm1_2] {\small ReLU};
 
-\begin{tikzpicture}
+    \node (conv2_1) [conv, right of=conv1_1, xshift=2.5cm] {\textbf{1x1x1} conv, \textit{16}, stride \textit{1,1,1}};
+    \node (batchnorm2_1) [batchnorm, below of= conv2_1] {\small batch normalization};
+    \node (relu2_1) [relu, below of=batchnorm2_1] {\small ReLU};
+    \node (conv2_2) [conv, below of=relu2_1, yshift=0.1cm] {\textbf{3x3x3} conv, \textit{48}, stride \textit{1,1,1}};
+    \node (batchnorm2_2) [batchnorm, below of= conv2_2] {\small batch normalization};
+    \node (relu2_2) [relu, below of=batchnorm2_2] {\small ReLU};
+   
+    \node (pool3_1) [pool, right of=conv2_1, xshift=2.5cm] {\textbf{3x3x3} max-pool,  stride \textit{1,1,1}};
+    \node (conv3_2) [conv, right of=conv2_2, xshift=2.5cm] {\textbf{1x1x1} conv, \textit{64}, stride \textit{1,1,1}};
+    \node (batchnorm3_2) [batchnorm, below of= conv3_2] {\small batch normalization};
+    \node (relu3_2) [relu, below of=batchnorm3_2] {\small ReLU};
 
+    \node (conv0_1) [conv, left of=conv1_2, xshift=-2.5cm] {\textbf{1x1x1} conv, \textit{192}, stride \textit{1,1,1}};
+    \node (batchnorm0_1) [batchnorm, below of= conv0_1] {\small batch normalization};
+    \node (relu0_1) [relu, below of=batchnorm0_1] {\small ReLU};
+   
+    \node (concat) [concat,  below of=relu1_2, xshift=1.8cm, yshift=-0.5cm] {\small Concatenation};
 
-    \node (prev_layer) [layer] {Previous Layer};
+    \node (next_layer) [layer, below of=concat, xshift=0cm, yshift=-0.5cm] {\small Next Layer};
+     
 
-    \node (conv1_1) [conv, below of=prev_layer, xshift=-2cm, yshift=-2cm] {\textbf{1x1x1} conv, \textit{16} };
-    \node (conv2_1) [conv, right of=conv1_1, xshift=3cm] {\textbf{1x1x1} conv, \textit{16}};
-    \node (pool3_1) [pool, right of=conv2_1, xshift=3cm] {\textbf{3x3x3} max-pool stride \textit{1,1,1}};
+    \draw [arrow, out=190, in=90] (prev_layer.south) to (conv0_1.north);
+    \draw [arrow] (prev_layer.south) -- (conv1_1.north);
+    \draw [arrow] (prev_layer.south) -- (conv2_1.north);
+    \draw [arrow, out=-10, in=135] (prev_layer.south) to (pool3_1.north);
 
-    \node (conv1_2) [conv, below of=conv1_1, yshift=-2cm] {\textbf{3x3x3} conv, \textit{16}};
-    \node (conv2_2) [conv, below of=conv2_1, yshift=-2cm] {\textbf{3x3x3} conv, \textit{16}};
-    \node (conv3_2) [conv, below of=pool3_1, yshift=-2cm] {\textbf{1x1x1} conv, \textit{16}};
-    \node (conv0_1) [conv, left of=conv1_2, xshift=-3cm] {\textbf{1x1x1} conv, \textit{16}};
+    \draw (conv0_1.south) -- (batchnorm0_1.north);
+    \draw (batchnorm0_1.south) -- (relu0_1.north);
+    \draw [arrow] (relu0_1.south) -- (concat);  
+             
+    \draw (conv1_1.south) -- (batchnorm1_1.north);
+    \draw (batchnorm1_1.south) -- (relu1_1.north);
+    \draw [arrow] (relu1_1.south) -- (conv1_2.north);
+    \draw (conv1_2.south) -- (batchnorm1_2.north);
+    \draw (batchnorm1_2.south) -- (relu1_2.north);
+    \draw [arrow] (relu1_2.south) -- (concat);  
     
-               
-    %\path (wa.south) +(0,-\blockdist) node (asrs) {Inflated Inception Module};
-  
-    %\begin{pgfonlayer}{background}
-    %    \path (asr1.west |- asr1.north)+(-0.5,0.3) node (a) {};
-        %\path (wa.south -| wa.east)+(+0.5,-0.3) node (b) {};
-    %    \path (vote.east |- asrs.east)+(+0.5,-0.5) node (c) {};
-          
-    %    \path[rounded corners, draw=black!50, line width=1pt]
-    %        (a) rectangle (c);           
-    %    \path (asr1.north west)+(-0.2,0.2) node (a) {};
-    %\end{pgfonlayer}
+    \draw (conv2_1.south) -- (batchnorm2_1.north);
+    \draw (batchnorm2_1.south) -- (relu2_1.north);
+    \draw [arrow] (relu2_1.south) -- (conv2_2.north);
+    \draw (conv2_2.south) -- (batchnorm2_2.north);
+    \draw (batchnorm2_2.south) -- (relu2_2.north);
+    \draw [arrow] (relu2_2.south) -- (concat);  
+
+    \draw [arrow] (pool3_1.south) -- (conv3_2.north);
+    \draw (conv3_2.south) -- (batchnorm3_2.north);
+    \draw (batchnorm3_2.south) -- (relu3_2.north);
+    \draw [arrow] (relu3_2.south) -- (concat);
+    
+    \draw [arrow] (concat.south) -- (next_layer.north) ;
+
+    \begin{pgfonlayer}{background}
+        \path (prev_layer.west |- prev_layer.north)+(-5,-2.2) node (a) {};
+        \path (next_layer.east |- next_layer.south)+(+5,+1) node (c) {};          
+        \path[rounded corners, draw=black!50, line width=1pt] (a) rectangle (c);
+        \path (next_layer.east |- next_layer.south)+(-6.5,1.5) node (label) {\large \textbf{Inc. }[192, 96, 208, 16, 48, 64]};
+    \end{pgfonlayer}
 
 \end{tikzpicture}
 
