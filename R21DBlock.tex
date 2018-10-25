@@ -57,11 +57,11 @@
     \draw [arrow] (add.south) -- (relu2.north);
     \draw [arrow] (relu2.south) -- (out.north);
 
-    \node (x) [below of=in, xshift=-0.15cm, yshift=-0.5cm] {};
-    \node (y) [right of=add, xshift=2.5cm, yshift=-0.15cm] {};
+    \node (x) [below of=in, xshift=-0.05cm, yshift=-0.5cm, inner sep=0pt] {};
+    \node (y) [right of=add, xshift=2.5cm, yshift=-0.05cm, inner sep=0pt] {};
 
     \draw [arrow] (x.east) -| (dec.north);
-    \draw [arrow, out=220, in=90] (dec.south) to node[near start, anchor=east] {\large\textbf{yes }} (y);
+    \draw [out=220, in=90] (dec.south) to node[near start, anchor=east] {\large\textbf{yes }} (y);
     \draw [arrow, out=-45, in=90] (dec.south) to node[near start, anchor=west] {\large\textbf{ no}} (conv_s.north);
     \draw (conv_s.south) -- (batchnorm_s.north);
     \draw [arrow] (batchnorm_s.south) |- (add);
