@@ -1,0 +1,55 @@
+\documentclass[]{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
+\usepackage{amsmath}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{io} = [rectangle, minimum width=4cm, minimum height=0.5cm, text centered, text width=4cm, fill=red!50]
+\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!55, yshift=0.1cm, text=white!255]
+\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!30, yshift=0.35cm]
+\tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,align=center, text width=3cm, fill=red!40]
+\tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
+\tikzstyle{every node}=[font=\scriptsize]
+\tikzstyle{label} = [rectangle, align=left, text width=3cm]
+
+\begin{tikzpicture}[line width=0.5mm]
+    \pagenumbering{gobble}
+    \node (in) [io] {\small Input\\(\textit{input\_channel})};
+
+    \node (label1) [label, below of=in, xshift=-1.3cm, yshift=-0.5cm] {\small\textbf{2+1D Unit}\\ \textit{[input\_channel,\\ output\_channel]}};
+
+    \node (conv2D) [conv, below of=in, yshift=-1.5cm] {\textbf{1x3x3} conv, $\alpha$, stride \textit{1, $\gamma$, $\gamma$}};
+    \node (batchnorm2D) [batchnorm, below of= conv2D] {\small batch normalization};
+    \node (relu2D) [relu, below of=batchnorm2D] {\small ReLU};
+
+    \node (conv1D) [conv, below of=relu2D] {\textbf{3x1x1} conv, $\beta$, stride \textit{ $\gamma$, 1, 1}};
+
+    \node (out) [io, below of=conv1D, yshift=-0.9cm] {\small Output\\(\textit{output\_channel})};
+
+    \draw [arrow] (in.south) -- (conv2D.north);
+    \draw (conv2D.south) -- (batchnorm2D.north);
+    \draw (batchnorm2D.south) -- (relu2D.north);
+    \draw [arrow] (relu2D.south) -- (conv1D.north);
+    \draw [arrow] (conv1D.south) -- (out.north);
+    
+    \begin{pgfonlayer}{background}
+        \path (in.west |- in.north)+(-0.8,-1.3) node (a) {};
+        \path (out.east |- out.south)+(+0.8,+1.5) node (c) {};          
+        \path[rounded corners, draw=black!255, line width=1pt] (a) rectangle (c);
+        %\path (next_layer.east |- next_layer.south)+(-6.5,1.5) node (label) {\large \textbf{Inc. }[192, 96, 208, 16, 48, 64]};
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}

@@ -15,7 +15,7 @@
 \pgfsetlayers{background,main,foreground}
 
 % define block styles used later
-\tikzstyle{inc} = [rectangle, minimum width=4.5cm, minimum height=0.5cm, align=left, text width=4.5cm, fill=white!255, draw=black!255, font=\small, yshift=0.2cm]
+\tikzstyle{inc} = [rectangle, rounded corners, minimum width=4.5cm, minimum height=0.5cm, align=left, text width=4.5cm, fill=white!255, draw=black!255, font=\small, yshift=0.2cm]
 \tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!55, yshift=0.4cm, text=white!255]
 \tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!30, yshift=0.4cm]
 \tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,align=center, text width=3cm, fill=red!40, yshift=0.1cm]
@@ -23,6 +23,7 @@
 \tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
 \tikzstyle{every node}=[font=\scriptsize]
 \tikzstyle{frame} = [rectangle, minimum width=0.9cm, minimum height=0.9cm, draw=black, line width=0.3mm, fill=white!255]
+\tikzstyle{label} = [rectangle,align=center, text width=4.5cm]
 
 \begin{tikzpicture}[line width=0.5mm]
     \pagenumbering{gobble}
@@ -36,7 +37,7 @@
     \node [frame, left of=frame7, xshift=0.95cm, yshift=-0.05cm] (frame8) {};
     \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
 
-    \node [above of=frame1, yshift=0cm] {\normalsize Video frames};
+    \node [label, above of=frame1, yshift=0cm] {\normalsize Video frames\\ \small 16 frames (112x112)};
 
     \node (conv1) [conv, below of=frame9, yshift=-0.3cm] {\textbf{7x7x7} conv, \textit{64}, stride \textit{2,2,2}};
     \node (batchnorm1) [batchnorm, below of= conv1] {\small batch normalization};

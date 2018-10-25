@@ -1,0 +1,108 @@
+\documentclass[]{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
+\usepackage{amsmath, bm, times}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{r21d} = [rectangle, rounded corners, minimum width=4cm, minimum height=0.5cm, align=center, text width=4cm, fill=white!255, draw=black!255, font=\small, yshift=0.1cm]
+\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!55, yshift=0.4cm, text=white!255]
+\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!30, yshift=0.4cm]
+\tikzstyle{conv} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,align=center, text width=3cm, fill=red!40, yshift=0.1cm]
+\tikzstyle{pool} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,text centered, text width=3cm, fill=red!30, yshift=0.1cm]
+\tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
+\tikzstyle{every node}=[font=\scriptsize]
+\tikzstyle{frame} = [rectangle, minimum width=0.9cm, minimum height=0.9cm, draw=black, line width=0.3mm, fill=white!255]
+\tikzstyle{label} = [rectangle,align=center, text width=4.5cm]
+
+\begin{tikzpicture}[line width=0.5mm]
+    \pagenumbering{gobble}
+    \node [frame] (frame1) {};    
+    \node [frame, left of=frame1, xshift=0.95cm, yshift=-0.05cm] (frame2) {};
+    \node [frame, left of=frame2, xshift=0.95cm, yshift=-0.05cm] (frame3) {};
+    \node [frame, left of=frame3, xshift=0.95cm, yshift=-0.05cm] (frame4) {};
+    \node [frame, left of=frame4, xshift=0.95cm, yshift=-0.05cm] (frame5) {};
+    \node [frame, left of=frame5, xshift=0.95cm, yshift=-0.05cm] (frame6) {};
+    \node [frame, left of=frame6, xshift=0.95cm, yshift=-0.05cm] (frame7) {};
+    \node [frame, left of=frame7, xshift=0.95cm, yshift=-0.05cm] (frame8) {};
+    \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
+
+    \node [label, above of=frame1, yshift=0cm] {\normalsize Video frames\\ \small 16 frames (112x112)};
+
+    \node (conv1) [conv, below of=frame9, yshift=-0.3cm] {\textbf{1x7x7} conv, \textit{45}, stride \textit{1,2,2}};
+    \node (batchnorm1) [batchnorm, below of= conv1] {\small batch normalization};
+    \node (relu1) [relu, below of=batchnorm1] {\small ReLU};
+
+    \node (conv2) [conv, below of=relu1] {\textbf{3x1x1} conv, \textit{64}, stride \textit{1,1,1}};
+    \node (batchnorm2) [batchnorm, below of= conv2] {\small batch normalization};
+    \node (relu2) [relu, below of=batchnorm2] {\small ReLU};
+
+    \node (comp_0) [r21d, below of=relu2, yshift=-0.1cm] {\textbf{R2+1D Block }   [\textit{64, 64}]};
+    \node (comp_1) [r21d, below of=comp_0] {\textbf{R2+1D Block }   [\textit{64, 64}]};
+    \node (comp_2) [r21d, below of=comp_1] {\textbf{R2+1D Block }   [\textit{64, 64}]};
+    \node (comp_3) [r21d, below of=comp_2] {\textbf{R2+1D Block }  [\textit{64, 128}]};
+    \node (comp_4) [r21d, below of=comp_3] {\textbf{R2+1D Block }[\textit{128, 128}]};
+    \node (comp_5) [r21d, below of=comp_4] {\textbf{R2+1D Block }[\textit{128, 128}]};
+    \node (comp_6) [r21d, below of=comp_5] {\textbf{R2+1D Block }[\textit{128, 128}]};
+    \node (comp_7) [r21d, below of=comp_6] {\textbf{R2+1D Block }[\textit{128, 256}]};
+    \node (comp_8) [r21d, below of=comp_7] {\textbf{R2+1D Block }[\textit{256, 256}]};
+    \node (comp_9) [r21d, below of=comp_8] {\textbf{R2+1D Block }[\textit{256, 256}]};
+    \node (comp_10) [r21d, below of=comp_9] {\textbf{R2+1D Block }[\textit{256, 256}]};
+    \node (comp_11) [r21d, below of=comp_10] {\textbf{R2+1D Block }[\textit{256, 256}]};
+    \node (comp_12) [r21d, below of=comp_11] {\textbf{R2+1D Block }[\textit{256, 256}]};
+    \node (comp_13) [r21d, below of=comp_12] {\textbf{R2+1D Block }[\textit{256, 512}]};
+    \node (comp_14) [r21d, below of=comp_13] {\textbf{R2+1D Block }[\textit{512, 512}]};
+    \node (comp_15) [r21d, below of=comp_14] {\textbf{R2+1D Block }[\textit{512, 512}]};
+
+    \node (pool) [pool, below of=comp_15] {\textbf{1x7x7} avg-pool, stride \textit{1,1,1}};
+    
+    \node (pred) [below of=pool] {\normalsize Predictions};
+
+   
+
+    \draw [arrow] (frame9) -- (conv1);
+    \draw (conv1) -- (batchnorm1);
+    \draw (batchnorm1) -- (relu1);
+    \draw [arrow] (relu1) -- (conv2);
+    \draw (conv2) -- (batchnorm2);
+    \draw (batchnorm2) -- (relu2);
+
+    \draw [arrow] (relu2) -- (comp_0);
+    \draw [arrow] (comp_0) -- (comp_1);
+    \draw [arrow] (comp_1) -- (comp_2);
+    \draw [arrow] (comp_2) -- (comp_3);
+    \draw [arrow] (comp_3) -- (comp_4);
+    \draw [arrow] (comp_4) -- (comp_5);
+    \draw [arrow] (comp_5) -- (comp_6);
+    \draw [arrow] (comp_6) -- (comp_7);
+    \draw [arrow] (comp_7) -- (comp_8);
+    \draw [arrow] (comp_8) -- (comp_9);
+    \draw [arrow] (comp_9) -- (comp_10);
+    \draw [arrow] (comp_10) -- (comp_11);
+    \draw [arrow] (comp_11) -- (comp_12);
+    \draw [arrow] (comp_12) -- (comp_13);
+    \draw [arrow] (comp_13) -- (comp_14);
+    \draw [arrow] (comp_14) -- (comp_15);
+
+    \draw [arrow] (comp_15) -- (pool);
+    \draw [arrow] (pool) -- (pred);
+
+    
+
+    \begin{pgfonlayer}{background}
+       
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}

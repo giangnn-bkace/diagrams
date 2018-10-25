@@ -26,7 +26,7 @@
 
 \begin{tikzpicture}[line width=0.5mm]
     \pagenumbering{gobble}
-    \node (prev_layer) [layer, xshift=-5cm] {\small Previous Layer};
+    \node (prev_layer) [layer] {\small Previous Layer};
 
     \node (conv1_1) [conv, below of=prev_layer, xshift=-1.8cm, yshift=-1.5cm] {\textbf{1x1x1} conv, \textit{96}, stride \textit{1,1,1}};
     \node (batchnorm1_1) [batchnorm, below of= conv1_1] {\small batch normalization};
@@ -89,7 +89,7 @@
     \begin{pgfonlayer}{background}
         \path (prev_layer.west |- prev_layer.north)+(-5,-2.2) node (a) {};
         \path (next_layer.east |- next_layer.south)+(+5,+1) node (c) {};          
-        \path[rounded corners, draw=black!50, line width=1pt] (a) rectangle (c);
+        \path[rounded corners, draw=black!255, line width=1pt] (a) rectangle (c);
         \path (next_layer.east |- next_layer.south)+(-6.5,1.5) node (label) {\large \textbf{Inc. }[192, 96, 208, 16, 48, 64]};
     \end{pgfonlayer}
 

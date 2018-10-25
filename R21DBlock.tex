@@ -1,0 +1,79 @@
+\documentclass[]{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
+\usepackage{amsmath, bm}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{io} = [rectangle, minimum width=4cm, minimum height=0.5cm, text centered, text width=4cm, fill=red!50]
+\tikzstyle{21d} = [rectangle, rounded corners, minimum width=4.5cm, minimum height=0.5cm, text centered, text width=4.5cm, fill=white!255, draw]
+\tikzstyle{batchnorm} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!55, yshift=0.1cm, text=white!255]
+\tikzstyle{relu} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, text width=3cm, fill=blue!30, yshift=0.35cm]
+\tikzstyle{conv} = [rectangle, rounded corners, minimum width=4cm, minimum height=0.5cm,align=center, text width=4cm, fill=red!40]
+\tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
+\tikzstyle{every node}=[font=\scriptsize]
+\tikzstyle{label} = [rectangle, minimum width=0cm, minimum height=0cm]
+\tikzstyle{add} = [circle, draw=black!255, yshift=-0.3cm]
+
+\begin{tikzpicture}[line width=0.5mm]
+    \pagenumbering{gobble}
+    \node (in) [io] {\small Input\\(\textit{input\_channel})};
+
+    %\node (label1) [label, below of=in, xshift=-1.3cm, yshift=-0.5cm] {\small\textbf{2+1DUnit}\\ \textit{[input\_channel,\\ output\_channel]}};
+
+    \node (21d_1) [21d, below of=in, yshift=-1.5cm] {\textbf{2+1D Unit} \\ {[\textit{input\_channel, output\_channel}]}};
+    \node (batchnorm1) [batchnorm, below of= 21d_1] {\small batch normalization};
+    \node (relu1) [relu, below of=batchnorm1] {\small ReLU};
+
+    \node (21d_2) [21d, below of=relu1, yshift=-0.5cm] {\textbf{2+1D Unit} \\ {[\textit{output\_channel, output\_channel}]}};
+    \node (batchnorm2) [batchnorm, below of= 21d_2] {\small batch normalization};
+    \node (add) [add, below of=batchnorm2] {\large$\bm{+}$};
+    \node (relu2) [relu, below of=add, yshift=-0.5cm] {\small ReLU};
+
+    \node (dec) [label, right of=21d_1, xshift=4.5cm, yshift=-1cm] {\small \textit{input\_channel = output\_channel}};
+    \node (conv_s) [conv, below of=dec, xshift=2cm, yshift=-1.5cm] {\textbf{1x1x1}, conv, \textit{output\_channel},\\ stride \textit{2, 2, 2}};
+    \node (batchnorm_s) [batchnorm, below of= conv_s] {\small batch normalization};
+
+    \node (out) [io, below of=relu2, yshift=-1cm] {\small Output\\(\textit{output\_channel})};
+
+    \draw [arrow] (in.south) -- (21d_1.north);
+    \draw (21d_1.south) -- (batchnorm1.north);
+    \draw (batchnorm1.south) -- (relu1.north);
+
+    \draw [arrow] (relu1.south) -- (21d_2.north);
+    \draw (21d_2.south) -- (batchnorm2.north);
+    \draw [arrow] (batchnorm2.south) -- (add.north);
+
+    \draw [arrow] (add.south) -- (relu2.north);
+    \draw [arrow] (relu2.south) -- (out.north);
+
+    \node (x) [below of=in, xshift=-0.15cm, yshift=-0.5cm] {};
+    \node (y) [right of=add, xshift=2.5cm, yshift=-0.15cm] {};
+
+    \draw [arrow] (x.east) -| (dec.north);
+    \draw [arrow, out=220, in=90] (dec.south) to node[near start, anchor=east] {\large\textbf{yes }} (y);
+    \draw [arrow, out=-45, in=90] (dec.south) to node[near start, anchor=west] {\large\textbf{ no}} (conv_s.north);
+    \draw (conv_s.south) -- (batchnorm_s.north);
+    \draw [arrow] (batchnorm_s.south) |- (add);
+    
+        
+    \begin{pgfonlayer}{background}
+        \path (in.west |- in.north)+(-1,-1.3) node (a) {};
+        \path (out.east |- out.south)+(+8,+1.5) node (c) {};          
+        \path[rounded corners, draw=black!255, line width=1pt] (a) rectangle (c);
+        \node (label) [label, right of=relu2, xshift=5cm, yshift=-0.5cm] {\normalsize \textbf{R2+1D Block }[\textit{input\_channel, output\_channel}]};
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}
