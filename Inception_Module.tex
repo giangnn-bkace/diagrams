@@ -87,6 +87,7 @@
     \draw [arrow] (concat.south) -- (next_layer.north) ;
 
     \begin{pgfonlayer}{background}
+        \node (title) [left of=prev_layer, xshift=-3.5cm, yshift=0.8cm] {\Large \textbf{Inflated Inception Module}};
         \path (prev_layer.west |- prev_layer.north)+(-5,-2.2) node (a) {};
         \path (next_layer.east |- next_layer.south)+(+5,+1) node (c) {};          
         \path[rounded corners, draw=black!255, line width=1pt] (a) rectangle (c);

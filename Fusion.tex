@@ -1,0 +1,88 @@
+\documentclass[]{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
+\usepackage{amsmath, bm, times}
+\newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
+\newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=5mm,
+ top=10mm,
+ }
+
+\begin{document}
+
+% define the layers to draw the diagram
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% define block styles used later
+\tikzstyle{model} = [rectangle, minimum width=2cm, minimum height=2cm, align=center, text width=2cm, fill=white!255, draw=black!255, font=\normalsize, yshift=-2cm]
+\tikzstyle{fusion} = [rectangle, minimum width=6cm, minimum height=1cm, align=center, text width=6cm, fill=blue!30, yshift=-2cm]
+\tikzstyle{softmax} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm,align=center, text width=3cm, fill=red!40, yshift=-0.5cm]
+\tikzstyle{arrow} = [thick,->,>=stealth, line width=0.5mm]
+\tikzstyle{every node}=[font=\scriptsize]
+\tikzstyle{frame} = [rectangle, minimum width=0.9cm, minimum height=0.9cm, draw=black, line width=0.3mm, fill=white!255]
+\tikzstyle{label} = [rectangle,align=center, text width=4.5cm]
+\tikzstyle {left} = [xshift=-2cm]
+\tikzstyle {right} = [xshift=2cm]
+\tikzstyle {up} = [yshift=0.5cm]
+
+\begin{tikzpicture}[line width=0.5mm]
+    \pagenumbering{gobble}
+    \node [frame] (frame1) {};    
+    \node [frame, left of=frame1, xshift=0.95cm, yshift=-0.05cm] (frame2) {};
+    \node [frame, left of=frame2, xshift=0.95cm, yshift=-0.05cm] (frame3) {};
+    \node [frame, left of=frame3, xshift=0.95cm, yshift=-0.05cm] (frame4) {};
+    \node [frame, left of=frame4, xshift=0.95cm, yshift=-0.05cm] (frame5) {};
+    \node [frame, left of=frame5, xshift=0.95cm, yshift=-0.05cm] (frame6) {};
+    \node [frame, left of=frame6, xshift=0.95cm, yshift=-0.05cm] (frame7) {};
+    \node [frame, left of=frame7, xshift=0.95cm, yshift=-0.05cm] (frame8) {};
+
+    \node [label, above of=frame1, yshift=0cm, xshift=-0.15cm] {\normalsize RGB frames};
+
+    \node [frame, left of=frame1, xshift=5cm] (frame21) {};    
+    \node [frame, left of=frame21, xshift=0.95cm, yshift=-0.05cm] (frame22) {};
+    \node [frame, left of=frame22, xshift=0.95cm, yshift=-0.05cm] (frame23) {};
+    \node [frame, left of=frame23, xshift=0.95cm, yshift=-0.05cm] (frame24) {};
+    \node [frame, left of=frame24, xshift=0.95cm, yshift=-0.05cm] (frame25) {};
+    \node [frame, left of=frame25, xshift=0.95cm, yshift=-0.05cm] (frame26) {};
+    \node [frame, left of=frame26, xshift=0.95cm, yshift=-0.05cm] (frame27) {};
+    \node [frame, left of=frame27, xshift=0.95cm, yshift=-0.05cm] (frame28) {};
+
+    \node [label, above of=frame21, yshift=0cm, xshift=-0.15cm] {\normalsize Optical-flow frames};
+
+    
+    \node [model, below of=frame1, xshift=-0.15cm] (rgb) {RGB\\ Model};
+    \node [model, below of=frame21, xshift=-0.15cm] (flow) {Optical-flow Model};
+
+    \draw [arrow] (frame4) -- (rgb);
+    \draw [arrow] (frame24) -- (flow);
+    \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
+    \node [frame, left of=frame28, xshift=0.95cm, yshift=-0.05cm] (frame29) {};
+
+
+    \node [fusion, below of= rgb, xshift=2cm] (fusion) {\small \textbf{Fusion}\\ \scriptsize RGB\_WEIGHT*\small\textit{rgb\_out} \scriptsize + FLOW\_WEIGHT*\small\textit{flow\_out}};
+
+    \node [softmax, below of=fusion] (soft) {\small Softmax};
+
+    \node [label, below of=soft] (pred) {\normalsize Prediction};
+
+    \draw [arrow, ] (rgb.south) to  node [anchor=east]{\small\textit{rgb\_out}} ([left, up] fusion); 
+    \draw [arrow, ] (flow.south) to  node [anchor=west]{\small\textit{flow\_out}} ([right, up] fusion); 
+
+    \draw [arrow] (fusion) -- (soft);
+    \draw [arrow] (soft) -- (pred);
+    
+
+    \begin{pgfonlayer}{background}
+       
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}

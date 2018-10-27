@@ -68,6 +68,7 @@
     
         
     \begin{pgfonlayer}{background}
+        \node (title) [right of=in, xshift=6cm, yshift=0.5cm] {\Large \textbf{Residual Module}};
         \path (in.west |- in.north)+(-1,-1.3) node (a) {};
         \path (out.east |- out.south)+(+8,+1.5) node (c) {};          
         \path[rounded corners, draw=black!255, line width=1pt] (a) rectangle (c);

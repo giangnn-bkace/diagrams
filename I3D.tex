@@ -5,7 +5,13 @@
 \usepackage{amsmath, bm, times}
 \newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
 \newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
-
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=5mm,
+ top=10mm,
+ }
 
 \begin{document}
 
@@ -35,11 +41,15 @@
     \node [frame, left of=frame5, xshift=0.95cm, yshift=-0.05cm] (frame6) {};
     \node [frame, left of=frame6, xshift=0.95cm, yshift=-0.05cm] (frame7) {};
     \node [frame, left of=frame7, xshift=0.95cm, yshift=-0.05cm] (frame8) {};
+
+    \node [label, above of=frame1, yshift=0cm] {\normalsize Video frames\\ \small 16 frames (224x224)};
+
+
+    \node (conv1) [conv, below of=frame8, yshift=-0.3cm, xshift=0.25cm] {\textbf{7x7x7} conv, \textit{64}, stride \textit{2,2,2}};
+
+    \draw [arrow] (frame3.south) -- (conv1.north);
     \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
 
-    \node [label, above of=frame1, yshift=0cm] {\normalsize Video frames\\ \small 16 frames (112x112)};
-
-    \node (conv1) [conv, below of=frame9, yshift=-0.3cm] {\textbf{7x7x7} conv, \textit{64}, stride \textit{2,2,2}};
     \node (batchnorm1) [batchnorm, below of= conv1] {\small batch normalization};
     \node (relu1) [relu, below of=batchnorm1] {\small ReLU};
 
@@ -75,7 +85,6 @@
 
     \node (pred) [below of=conv4] {\normalsize Predictions};
 
-    \draw [arrow] (frame9.south) -- (conv1.north);
     \draw (conv1.south) -- (batchnorm1.north);
     \draw (batchnorm1.south) -- (relu1.north);
 
@@ -111,6 +120,8 @@
     \draw [arrow] (pool5.south) -- (conv4.north);
 
     \draw [arrow] (conv4.south) -- (pred.north);
+
+    \node [below of=pred, yshift=-0.5cm] {\Large \textbf{Inflated Inception-V1 Model}};
 
     \begin{pgfonlayer}{background}
        

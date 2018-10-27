@@ -6,6 +6,13 @@
 \newcommand{\mx}[1]{\mathbf{\bm{#1}}} % Matrix command
 \newcommand{\vc}[1]{\mathbf{\bm{#1}}} % Vector command
 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=5mm,
+ top=10mm,
+ }
 
 \begin{document}
 
@@ -35,11 +42,14 @@
     \node [frame, left of=frame5, xshift=0.95cm, yshift=-0.05cm] (frame6) {};
     \node [frame, left of=frame6, xshift=0.95cm, yshift=-0.05cm] (frame7) {};
     \node [frame, left of=frame7, xshift=0.95cm, yshift=-0.05cm] (frame8) {};
-    \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
 
     \node [label, above of=frame1, yshift=0cm] {\normalsize Video frames\\ \small 16 frames (112x112)};
 
-    \node (conv1) [conv, below of=frame9, yshift=-0.3cm] {\textbf{1x7x7} conv, \textit{45}, stride \textit{1,2,2}};
+    \node (conv1) [conv, below of=frame6, yshift=-0.5cm, xshift=0.2cm] {\textbf{1x7x7} conv, \textit{45}, stride \textit{1,2,2}};
+
+    \draw [arrow] (frame2) -- (conv1);
+    \node [frame, left of=frame8, xshift=0.95cm, yshift=-0.05cm] (frame9) {};
+
     \node (batchnorm1) [batchnorm, below of= conv1] {\small batch normalization};
     \node (relu1) [relu, below of=batchnorm1] {\small ReLU};
 
@@ -70,7 +80,6 @@
 
    
 
-    \draw [arrow] (frame9) -- (conv1);
     \draw (conv1) -- (batchnorm1);
     \draw (batchnorm1) -- (relu1);
     \draw [arrow] (relu1) -- (conv2);
@@ -98,6 +107,7 @@
     \draw [arrow] (pool) -- (pred);
 
     
+    \node (title) [below of=pred, yshift=-0.5] {\Large \textbf{R(2+1)D Model}};   
 
     \begin{pgfonlayer}{background}
        
